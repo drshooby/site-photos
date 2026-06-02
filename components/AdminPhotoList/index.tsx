@@ -1,0 +1,1 @@
+export { AdminPhotoList } from "./AdminPhotoList";
