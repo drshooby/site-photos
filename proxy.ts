@@ -54,7 +54,7 @@ async function ensureFreshToken(req: NextRequest): Promise<NextResponse | null> 
   }
 }
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
   const isProtected = PROTECTED_PREFIXES.some(p => path.startsWith(p));
 
