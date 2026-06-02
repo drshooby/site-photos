@@ -77,3 +77,41 @@ resource "aws_cloudwatch_log_group" "list_photos" {
   name              = "/aws/lambda/${aws_lambda_function.list_photos.function_name}"
   retention_in_days = 14
 }
+
+data "archive_file" "admin" {
+  type        = "zip"
+  source_file = "${path.module}/lambda/admin/main.py"
+  output_path = "${path.module}/admin.zip"
+}
+
+resource "aws_lambda_function" "admin" {
+  function_name    = "${local.project}-admin"
+  role             = aws_iam_role.admin.arn
+  handler          = "main.handler"
+  runtime          = "python3.12"
+  filename         = data.archive_file.admin.output_path
+  source_code_hash = data.archive_file.admin.output_base64sha256
+  timeout          = 10
+  memory_size      = 256
+
+  environment {
+    variables = {
+      BUCKET_NAME  = aws_s3_bucket.photos.id
+      PHOTOS_TABLE = aws_dynamodb_table.photos.name
+      USERS_TABLE  = aws_dynamodb_table.users.name
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "admin" {
+  name              = "/aws/lambda/${aws_lambda_function.admin.function_name}"
+  retention_in_days = 14
+}
+
+resource "aws_lambda_permission" "apigw_admin" {
+  statement_id  = "AllowAPIGatewayInvokeAdmin"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.admin.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.main.execution_arn}/*/*"
+}
