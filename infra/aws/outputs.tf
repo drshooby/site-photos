@@ -16,7 +16,7 @@ output "s3_bucket_name" {
 
 output "cloudfront_distribution_domain" {
   value       = aws_cloudfront_distribution.photos.domain_name
-  description = "Add a CNAME ${var.cdn_domain} → this value in Vercel DNS."
+  description = "Add a CNAME for cdn_domain pointing to this value in Vercel DNS."
 }
 
 output "cdn_domain" {
