@@ -47,3 +47,33 @@ resource "aws_s3_bucket_notification" "originals" {
 
   depends_on = [aws_lambda_permission.resize_s3]
 }
+
+data "archive_file" "list_photos" {
+  type        = "zip"
+  source_file = "${path.module}/lambda/list_photos/main.py"
+  output_path = "${path.module}/list_photos.zip"
+}
+
+resource "aws_lambda_function" "list_photos" {
+  function_name    = "${local.project}-list-photos"
+  role             = aws_iam_role.list_photos.arn
+  handler          = "main.handler"
+  runtime          = "python3.12"
+  filename         = data.archive_file.list_photos.output_path
+  source_code_hash = data.archive_file.list_photos.output_base64sha256
+  timeout          = 10
+  memory_size      = 256
+
+  environment {
+    variables = {
+      PHOTOS_TABLE      = aws_dynamodb_table.photos.name
+      USERS_TABLE       = aws_dynamodb_table.users.name
+      CLOUDFRONT_DOMAIN = var.cdn_domain
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "list_photos" {
+  name              = "/aws/lambda/${aws_lambda_function.list_photos.function_name}"
+  retention_in_days = 14
+}
