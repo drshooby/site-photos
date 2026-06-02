@@ -1,0 +1,101 @@
+.form {
+  --muted: #737373;
+  --line: #d4d4d4;
+  --ink: #0a0a0a;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 480px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+
+.input {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  padding: 8px 0;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  width: 100%;
+}
+
+.input:focus {
+  outline: none;
+  border-bottom-color: var(--ink);
+}
+
+.fileInput {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  padding: 8px 0;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  width: 100%;
+  font-size: 14px;
+}
+
+.fileInput:focus {
+  outline: none;
+  border-bottom-color: var(--ink);
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.checkboxRow input {
+  accent-color: var(--ink);
+}
+
+.submit {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 0;
+  padding: 12px 24px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 200ms ease;
+}
+
+.submit:hover:not(:disabled) {
+  opacity: 0.7;
+}
+
+.submit:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.status {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+@media (prefers-color-scheme: dark) {
+  .form {
+    --muted: #a3a3a3;
+    --line: #404040;
+    --ink: #fafafa;
+  }
+}
