@@ -1,0 +1,50 @@
+.main {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(48px, 8vh, 96px) clamp(20px, 4vw, 64px) clamp(64px, 8vh, 96px);
+}
+
+.header {
+  margin: 0 0 clamp(48px, 6vh, 80px);
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #737373;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.section {
+  margin-bottom: clamp(48px, 6vh, 80px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section:last-of-type {
+  margin-bottom: 0;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #737373;
+  letter-spacing: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .eyebrow,
+  .sectionTitle {
+    color: #a3a3a3;
+  }
+}

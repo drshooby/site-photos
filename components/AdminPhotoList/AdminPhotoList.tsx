@@ -1,19 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Photo } from "@/lib/api/types";
 import styles from "./AdminPhotoList.module.css";
 
 export function AdminPhotoList({ refreshSignal }: { refreshSignal: number }) {
   const [photos, setPhotos] = useState<Photo[]>([]);
 
-  async function load() {
+  const load = useCallback(async () => {
     const res = await fetch("/api/admin/photos", { cache: "no-store" });
     if (res.ok) setPhotos((await res.json()).photos);
-  }
+  }, []);
 
   useEffect(() => {
-    void load();
+    let cancelled = false;
+    (async () => {
+      const res = await fetch("/api/admin/photos", { cache: "no-store" });
+      if (!cancelled && res.ok) setPhotos((await res.json()).photos);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [refreshSignal]);
 
   async function del(id: string) {
