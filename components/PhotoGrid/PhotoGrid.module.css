@@ -1,24 +1,17 @@
-.grid {
+.columns {
   --muted: #737373;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  column-count: 3;
   column-gap: clamp(20px, 3vw, 32px);
-  row-gap: clamp(40px, 5vw, 64px);
-  list-style: none;
-  padding: 0;
-  margin: 0;
 }
 
 .cell {
-  margin: 0;
-}
-
-.imgLink {
+  break-inside: avoid;
+  margin-bottom: clamp(28px, 4vw, 48px);
   display: block;
   transition: opacity 600ms ease;
 }
 
-.imgLink:hover {
+.cell:hover {
   opacity: 0.82;
 }
 
@@ -43,8 +36,20 @@
   margin: 0;
 }
 
+@media (max-width: 1280px) {
+  .columns {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .columns {
+    column-count: 1;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
-  .grid,
+  .columns,
   .empty {
     --muted: #a3a3a3;
   }

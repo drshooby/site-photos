@@ -18,10 +18,6 @@ export default async function HomePage() {
 
   return (
     <main className={styles.main}>
-      <header className={styles.header}>
-        <p className={styles.eyebrow}>David Shubov</p>
-        <h1 className={styles.title}>Photographs</h1>
-      </header>
       <PhotoGrid photos={photos} />
     </main>
   );

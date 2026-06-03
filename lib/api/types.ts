@@ -3,6 +3,8 @@ export type Photo = {
   title: string;
   isPublic: boolean;
   createdAt: string;
+  width: number;
+  height: number;
   urls: { thumb: string; medium: string; large: string };
 };
 
