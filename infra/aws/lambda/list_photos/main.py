@@ -22,6 +22,8 @@ def to_response(photos: list[dict]) -> dict:
             "title": p.get("title", ""),
             "isPublic": bool(p.get("is_public", False)),
             "createdAt": p.get("created_at"),
+            "width": int(p.get("width", 1200)),
+            "height": int(p.get("height", 800)),
             "urls": {
                 size: f"https://{CDN}/{variants[size]}"
                 for size in ("thumb", "medium", "large")

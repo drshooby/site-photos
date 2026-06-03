@@ -49,6 +49,9 @@ def handler(event, _ctx):
     obj = s3.get_object(Bucket=bucket, Key=key)
     body = obj["Body"].read()
 
+    orig_img = Image.open(io.BytesIO(body))
+    orig_w, orig_h = orig_img.width, orig_img.height
+
     variants = {}
     for label, width in SIZES.items():
         out_key = f"processed/{photo_id}/{label}.webp"
@@ -72,6 +75,8 @@ def handler(event, _ctx):
             "is_public_str": {"S": "true" if is_public else "false"},
             "created_at": {"S": datetime.now(timezone.utc).isoformat()},
             "variants": {"M": variants},
+            "width": {"N": str(orig_w)},
+            "height": {"N": str(orig_h)},
         },
     )
     return {"ok": True}
