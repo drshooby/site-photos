@@ -1,12 +1,4 @@
-.columns {
-  --muted: #737373;
-  column-count: 3;
-  column-gap: clamp(20px, 3vw, 32px);
-}
-
 .cell {
-  break-inside: avoid;
-  margin-bottom: clamp(28px, 4vw, 48px);
   display: block;
   transition: opacity 600ms ease;
 }
@@ -24,33 +16,20 @@
 .title {
   margin: 12px 0 0;
   font-size: 13px;
-  color: var(--muted, #737373);
+  color: #737373;
   font-weight: 400;
   letter-spacing: 0;
 }
 
 .empty {
-  --muted: #737373;
-  color: var(--muted, #737373);
+  color: #737373;
   font-size: 14px;
   margin: 0;
 }
 
-@media (max-width: 1280px) {
-  .columns {
-    column-count: 2;
-  }
-}
-
-@media (max-width: 768px) {
-  .columns {
-    column-count: 1;
-  }
-}
-
 @media (prefers-color-scheme: dark) {
-  .columns,
+  .title,
   .empty {
-    --muted: #a3a3a3;
+    color: #a3a3a3;
   }
 }
