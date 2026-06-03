@@ -14,7 +14,6 @@ resource "aws_cloudfront_distribution" "photos" {
   origin {
     domain_name              = aws_s3_bucket.photos.bucket_regional_domain_name
     origin_id                = "s3-processed"
-    origin_path              = "/processed"
     origin_access_control_id = aws_cloudfront_origin_access_control.photos.id
 
     s3_origin_config {
