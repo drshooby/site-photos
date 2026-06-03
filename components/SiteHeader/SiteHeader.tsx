@@ -31,14 +31,14 @@ export async function SiteHeader() {
                   </span>
                 ) : null}
               </span>
-              <Link href="/auth/logout" className={styles.link}>
+              <a href="/auth/logout" className={styles.link}>
                 Sign out
-              </Link>
+              </a>
             </>
           ) : (
-            <Link href="/auth/login" className={styles.link}>
+            <a href="/auth/login" className={styles.link}>
               Sign in
-            </Link>
+            </a>
           )}
         </nav>
       </div>
