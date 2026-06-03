@@ -37,7 +37,7 @@ variable "google_auth_client_secret" {
 variable "pillow_layer_arn" {
   description = "Klayers Pillow layer ARN for Python 3.12 in us-east-1."
   type        = string
-  # Update version periodically from https://api.klayers.cloud/api/v2/p3.12/layers/latest/us-east-1/json/Pillow
+  default     = "arn:aws:lambda:us-east-1:770693421928:layer:Klayers-p312-Pillow:11"
 }
 
 variable "callback_urls" {
