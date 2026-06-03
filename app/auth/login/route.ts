@@ -12,7 +12,7 @@ export async function GET() {
     httpOnly: true,
     secure: true,
     sameSite: "lax" as const,
-    path: "/auth/callback",
+    path: "/auth",
     maxAge: 600,
   };
   res.cookies.set("oauth_state", state, cookieOpts);

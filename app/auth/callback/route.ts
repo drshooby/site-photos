@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
-      path: "/auth/refresh",
+      path: "/",
       maxAge: 60 * 60 * 24 * 30,
     });
   }
@@ -45,7 +45,7 @@ export async function GET(req: NextRequest) {
     httpOnly: true,
     secure: true,
     sameSite: "lax" as const,
-    path: "/auth/callback",
+    path: "/auth",
     maxAge: 0,
   };
   res.cookies.set("oauth_state", "", transient);

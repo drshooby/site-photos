@@ -6,7 +6,7 @@ const PROTECTED_PREFIXES = ["/admin"];
 
 function clearAuth(res: NextResponse) {
   res.cookies.set("id_token", "", { path: "/", maxAge: 0 });
-  res.cookies.set("refresh_token", "", { path: "/auth/refresh", maxAge: 0 });
+  res.cookies.set("refresh_token", "", { path: "/", maxAge: 0 });
 }
 
 async function ensureFreshToken(req: NextRequest): Promise<NextResponse | null> {
@@ -43,7 +43,7 @@ async function ensureFreshToken(req: NextRequest): Promise<NextResponse | null> 
     if (tokens.refresh_token) {
       res.cookies.set("refresh_token", tokens.refresh_token, {
         httpOnly: true, secure: true, sameSite: "lax",
-        path: "/auth/refresh", maxAge: 60 * 60 * 24 * 30,
+        path: "/", maxAge: 60 * 60 * 24 * 30,
       });
     }
     return res;
