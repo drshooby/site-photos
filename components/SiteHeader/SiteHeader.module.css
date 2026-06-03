@@ -55,6 +55,18 @@
   color: #a3a3a3;
 }
 
+.roleLink {
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+}
+
+.roleLink:hover {
+  text-decoration: underline;
+  color: var(--foreground);
+}
+
 @media (prefers-color-scheme: dark) {
   .link,
   .identity {

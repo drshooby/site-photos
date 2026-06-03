@@ -18,11 +18,19 @@ export async function SiteHeader() {
             <>
               <span className={styles.identity}>
                 {email}
-                {role ? <span className={styles.role}> · {role}</span> : null}
+                {role ? (
+                  <span className={styles.role}>
+                    {" · "}
+                    {role === "admin" ? (
+                      <Link href="/admin" className={styles.roleLink}>
+                        {role}
+                      </Link>
+                    ) : (
+                      role
+                    )}
+                  </span>
+                ) : null}
               </span>
-              <Link href="/admin" className={styles.link}>
-                Admin
-              </Link>
               <Link href="/auth/logout" className={styles.link}>
                 Sign out
               </Link>
