@@ -28,6 +28,7 @@ export function PhotoGrid({ photos }: PhotoGridProps) {
   return (
     <MasonryPhotoAlbum
       photos={items}
+      defaultContainerWidth={1280}
       columns={(w) => (w < 768 ? 1 : w < 1280 ? 2 : 3)}
       spacing={(w) => (w < 768 ? 20 : w < 1280 ? 24 : 32)}
       render={{
