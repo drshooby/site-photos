@@ -36,3 +36,7 @@ output "acm_validation_cnames" {
 output "api_gateway_url" {
   value = "${aws_api_gateway_stage.prod.invoke_url}"
 }
+
+output "acm_certificate_arn" {
+  value = aws_acm_certificate.cdn.arn
+}
