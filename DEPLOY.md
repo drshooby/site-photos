@@ -67,6 +67,21 @@ Expect:
 
 The CloudFront failure does **not** roll back the other resources. Proceed.
 
+### Why this needs ≥2 applies (and why `scripts/deploy.sh` may need to run multiple times)
+
+The bring-up is a chicken-and-egg:
+
+1. **Apply #1** creates Cognito, API Gateway, S3, DynamoDB, Lambdas, and *requests* the ACM cert. CloudFront errors with `InvalidViewerCertificate` because the cert is still `PENDING_VALIDATION`.
+2. **Manual DNS step** (§5) — you add the ACM validation CNAMEs in Cloudflare. ACM cannot validate without these, and Terraform cannot create them for you (DNS is not Terraform-managed here). This is the human-in-the-loop break in the pipeline.
+3. **Wait** for the cert to flip to `ISSUED` (1–5 min usually).
+4. **Apply #2** (§6) now succeeds — CloudFront attaches the validated cert and deploys.
+
+`scripts/deploy.sh` just wraps `terraform apply` and prints outputs; it does **not** poll ACM or loop. You will run it (or plain `terraform apply`) at least twice: once before the DNS step, once after. If anything else changes mid-flight (e.g. a tainted cert, an `acm_validation_cnames` update), expect another apply.
+
+Vercel env vars depend on these outputs in two waves:
+- After **apply #1**: `COGNITO_DOMAIN`, `COGNITO_CLIENT_ID`, `API_GATEWAY_URL` are available — you can set them on Vercel even though the site won't fully work yet.
+- After **apply #2**: `CLOUDFRONT_URL` is real. (Its *value* — `https://cdn.photos.davidshubov.com` — is a static string from `cdn_domain`, so technically you can set it earlier, but images won't resolve until the distribution is live and DNS in step 7 is in place.)
+
 ---
 
 ## 4. Google OAuth redirect URI
@@ -259,7 +274,33 @@ After Terraform finishes:
 
 ---
 
-## 12. Things deliberately not built
+## 12. Critical landmines (do not regress)
+
+These are bugs that have already been hit, root-caused, and fixed. They are easy to reintroduce without realising it — read this section before touching auth UI or cookie scopes.
+
+### Auth links must be plain `<a href>`, never `<Link>` — commit `0763929`
+
+**Symptom:** clicking **Sign in** lands on `/auth/callback?error=invalid_state` (or the callback throws `invalid_state`). Login is fully broken.
+
+**Root cause:** Next 16 `<Link>` does a client-side RSC fetch on hover/click (`GET /auth/login?_rsc=…`) rather than a real browser navigation. That RSC fetch *does* hit the `/auth/login` route handler and *does* set the PKCE `state` + `code_verifier` cookies — but the cookies land on the **fetch response** that React discards, not on the document. When you then actually navigate to Cognito and come back to `/auth/callback`, the browser has no `state` cookie to compare against the `state` query param. Result: `invalid_state`, every time.
+
+**Fix (already shipped in commit `0763929`):** in `components/SiteHeader/SiteHeader.tsx`, the Sign in / Sign out anchors are plain `<a href="…">`, not `next/link` `<Link>`. A real `<a>` triggers a top-level navigation, so the `Set-Cookie` on `/auth/login`'s redirect response is honored by the browser before it follows the 302 to Cognito.
+
+**Rule going forward:** any link whose target is `/auth/*` MUST be a plain `<a href>`. Do not import `Link` for those routes. If you add a new auth entry point (e.g. a "Re-authenticate" button), keep it as `<a>`. Lint won't catch this; only manual review will.
+
+The corresponding row in §10's table is the symptom-level summary; this section is the explanation.
+
+### `refresh_token` cookie must be path `/`, not `/auth/refresh`
+
+**Symptom:** signed-in users get bounced through Cognito's hosted UI again well before the `id_token` expires, especially on `/admin/*`.
+
+**Root cause:** an earlier version set `refresh_token` with `Path=/auth/refresh`. The edge middleware (`proxy.ts`) runs on every request and tries to read `refresh_token` to renew an expiring `id_token`. With the narrow path, the cookie wasn't sent on `/admin/*` requests, so the middleware saw "no refresh token" and forced a re-login.
+
+**Fix (already shipped):** `app/auth/callback/route.ts` writes `refresh_token` with `path: "/"`. Same for `proxy.ts` when it rotates the token. Do not narrow the path again.
+
+---
+
+## 13. Things deliberately not built
 
 - HEIC ingest (drop / convert on Mac before upload).
 - Cursor-based pagination (hard cap of 60 photos returned).
