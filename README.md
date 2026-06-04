@@ -237,6 +237,10 @@ Local sign-in works because `callback_urls` / `logout_urls` in `infra/aws/variab
 
 HEIC ingest, cursor pagination, background S3 ↔ DDB reconciliation, manual photo ordering, multi-region failover, upload progress beyond an elapsed-seconds counter.
 
+## Known issues / TODO
+
+- **`react-photo-album` breaks layout on viewport resize.** `<PhotoGrid>` uses `react-photo-album` for the masonry/rows layout; it doesn't recompute cleanly when the window is resized and ends up with overlapping or misaligned tiles until a full page reload. Low priority — revisit by either upgrading the library, debouncing a manual re-render on `resize`, or replacing with a CSS-grid-based layout.
+
 ---
 
 ## Where to read more
