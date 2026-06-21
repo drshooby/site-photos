@@ -10,6 +10,10 @@ async function authHeaders(): Promise<Headers> {
 }
 
 export async function listPublicPhotos(): Promise<PhotosResponse> {
+  if (process.env.NODE_ENV === "development") {
+    const { listMockPhotos } = await import("./mock");
+    return listMockPhotos();
+  }
   const res = await fetch(`${env.apiGatewayUrl}/photos`, { cache: "no-store" });
   if (!res.ok) return { photos: [] };
   return res.json();
