@@ -1,6 +1,26 @@
+.grid {
+  column-count: 2;
+  column-gap: 24px;
+}
+
+@media (min-width: 1280px) {
+  .grid {
+    column-count: 3;
+    column-gap: 32px;
+  }
+}
+
 .cell {
   display: block;
+  margin: 0 0 24px;
+  break-inside: avoid;
   transition: opacity 600ms ease;
+}
+
+@media (min-width: 1280px) {
+  .cell {
+    margin-bottom: 32px;
+  }
 }
 
 .cell:hover {
@@ -13,23 +33,29 @@
   display: block;
 }
 
-.title {
-  margin: 12px 0 0;
-  font-size: 13px;
-  color: #737373;
-  font-weight: 400;
-  letter-spacing: 0;
-}
-
-.empty {
+.empty,
+.notice {
   color: #737373;
   font-size: 14px;
   margin: 0;
 }
 
+.notice {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .grid {
+    display: none;
+  }
+  .notice {
+    display: block;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
-  .title,
-  .empty {
+  .empty,
+  .notice {
     color: #a3a3a3;
   }
 }

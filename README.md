@@ -18,7 +18,7 @@ For the step-by-step bring-up / teardown, see [`DEPLOY.md`](./DEPLOY.md). For ag
 | Layer            | Choice                                                          |
 | ---------------- | --------------------------------------------------------------- |
 | Frontend         | Next.js 16 (App Router) + React 19 + TypeScript, deployed on Vercel |
-| Image gallery    | `react-photo-album` + `next/image`                              |
+| Image gallery    | CSS Grid masonry + `next/image`                                 |
 | Auth             | AWS Cognito User Pool federating to Google OAuth (PKCE flow)    |
 | Session          | httpOnly cookies (`id_token`, `refresh_token`) set by Next routes |
 | API              | API Gateway (REST) + 3 Python 3.12 Lambdas                      |
@@ -49,7 +49,7 @@ app/                         Next.js App Router
 
 components/                  One folder per component (see CLAUDE.md for layout)
   SiteHeader/                Sign-in / sign-out / current email + role
-  PhotoGrid/                 react-photo-album wrapper with next/image
+  PhotoGrid/                 CSS Grid masonry with next/image
   AdminUpload/               Drag-drop → presigned POST → S3
   AdminPhotoList/            Admin view + delete
 
@@ -236,10 +236,6 @@ Local sign-in works because `callback_urls` / `logout_urls` in `infra/aws/variab
 ## Deliberately not built
 
 HEIC ingest, cursor pagination, background S3 ↔ DDB reconciliation, manual photo ordering, multi-region failover, upload progress beyond an elapsed-seconds counter.
-
-## Known issues / TODO
-
-- **`react-photo-album` breaks layout on viewport resize.** `<PhotoGrid>` uses `react-photo-album` for the masonry/rows layout; it doesn't recompute cleanly when the window is resized and ends up with overlapping or misaligned tiles until a full page reload. Low priority — revisit by either upgrading the library, debouncing a manual re-render on `resize`, or replacing with a CSS-grid-based layout.
 
 ---
 
